@@ -27,15 +27,9 @@ $messages['en'] = array(
 	'wikieditor-previewDialog-tab' => 'Preview',
 	'wikieditor-previewDialog-loading' => 'Loading...',
 	/* Publish */
-	'wikieditor-publish-preference' => 'Enable step-by-step publishing',
+	'wikieditor-publish-preference' => 'Enable publishing while staying in edit mode',
 	'wikieditor-publish-button-publish' => 'Publish',
-	'wikieditor-publish-button-cancel' => 'Cancel',
-	'wikieditor-publish-dialog-title' => 'Publish to {{SITENAME}}',
-	'wikieditor-publish-dialog-summary' => 'Edit summary (briefly describe the changes you have made):',
-	'wikieditor-publish-dialog-minor' => 'Minor edit',
-	'wikieditor-publish-dialog-watch' => 'Watch this page',
-	'wikieditor-publish-dialog-publish' => 'Publish',
-	'wikieditor-publish-dialog-goback' => 'Go back',
+	'wikieditor-publish-error' => 'Error publishing: $1',
 	/* Template Editor */
 	'wikieditor-template-editor-preference' => 'Enable form-based editing of wiki templates',
 	'wikieditor-template-editor-dialog-title' => 'Edit template',
@@ -319,20 +313,7 @@ I guess that "feature-providing modules" means the same as "modules providing fe
 	'wikieditor-publish-button-publish' => 'Button to the right of the Edit/Preview tabs that opens a dialog window that lets the user save their edit
 
 {{Identical|Publish}}',
-	'wikieditor-publish-button-cancel' => 'Button to the right of the Edit/Preview tabs that has the same effect as the {{msg-mw|Cancel}} link below the edit box.
-
-{{Identical|Cancel}}',
-	'wikieditor-publish-dialog-title' => 'Title of the dialog that opens when the user clicks the Publish button',
-	'wikieditor-publish-dialog-summary' => 'Label for the edit summary textbox in the dialog that opens when the user clicks the Publish button. See also {{msg-mw|Summary}}.',
-	'wikieditor-publish-dialog-minor' => 'Label for the minor edit checkbox in the dialog that opens when the user clicks the Publish button. See also {{msg-mw|Minoredit}}',
-	'wikieditor-publish-dialog-watch' => 'Label for the watch checkbox in the dialog that opens when the user clicks the Publish button
-
-{{Identical|Watch this page}}',
-	'wikieditor-publish-dialog-publish' => "Button that saves the user's edit in the dialog that opens when the user clicks the Publish button
-
-{{Identical|Publish}}",
-	'wikieditor-publish-dialog-goback' => 'Button that closes the dialog that opens when the user clicks the Publish button.
-{{Identical|Go back}}',
+	'wikieditor-publish-error' => 'Error message, used in JavaScript',
 	'wikieditor-template-editor-dialog-submit' => '{{Identical|Update}}',
 	'wikieditor-template-editor-dialog-cancel' => '{{Identical|Cancel}}',
 	'wikieditor-toc-preference' => "Option at [[Special:Preferences]], tab ''{{int:prefs-editing}}''",
@@ -23365,15 +23346,9 @@ $messages['ru'] = array(
 	'wikieditor-previewDialog-preference' => 'Включить диалог предпросмотра',
 	'wikieditor-previewDialog-tab' => 'Предпросмотр',
 	'wikieditor-previewDialog-loading' => 'Загрузка…',
-	'wikieditor-publish-preference' => 'Включить пошаговую публикацию',
+	'wikieditor-publish-preference' => 'Включить публикацию без выхода из редактирования',
 	'wikieditor-publish-button-publish' => 'Опубликовать',
-	'wikieditor-publish-button-cancel' => 'Отмена',
-	'wikieditor-publish-dialog-title' => 'Опубликование в проекте {{SITENAME}}',
-	'wikieditor-publish-dialog-summary' => 'Описание изменений (кратко укажите какие изменения были произведены):',
-	'wikieditor-publish-dialog-minor' => 'Малое изменение',
-	'wikieditor-publish-dialog-watch' => 'Наблюдать за этой страницей',
-	'wikieditor-publish-dialog-publish' => 'Опубликовать',
-	'wikieditor-publish-dialog-goback' => 'Назад',
+	'wikieditor-publish-error' => 'Ошибка сохранения: $1',
 	'wikieditor-template-editor-preference' => 'Включить редактирование шаблонов с помощью форм',
 	'wikieditor-template-editor-dialog-title' => 'Изменение шаблона',
 	'wikieditor-template-editor-dialog-submit' => 'Обновить',
