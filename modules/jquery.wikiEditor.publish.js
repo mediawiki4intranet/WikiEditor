@@ -4,148 +4,132 @@
 $.wikiEditor.modules.publish = {
 
 /**
- * Compatability map
- */
-browsers: {
-	// Left-to-right languages
-	ltr: {
-		msie: [['>=', 7]],
-		firefox: [['>=', 3]],
-		opera: [['>=', 9.6]],
-		safari: [['>=', 4]]
-	},
-	// Right-to-left languages
-	rtl: {
-		msie: [['>=', 8]],
-		firefox: [['>=', 3]],
-		opera: [['>=', 9.6]],
-		safari: [['>=', 4]]
-	}
-},
-/**
  * Internally used functions
  */
 fn: {
 	/**
-	 * Creates a publish module within a wikiEditor
+	 * Creates a publish-staying-in-edit-mode button within a wikiEditor
 	 * @param context Context object of editor to create module in
 	 * @param config Configuration object to create module from
 	 */
 	create: function ( context, config ) {
-		// Build the dialog behind the Publish button
-		var dialogID = 'wikiEditor-' + context.instance + '-dialog';
-		$.wikiEditor.modules.dialogs.fn.create(
-			context,
-			{
-				previewsave: {
-					id: dialogID,
-					titleMsg: 'wikieditor-publish-dialog-title',
-					html: '\
-						<div class="wikiEditor-publish-dialog-copywarn"></div>\
-						<div class="wikiEditor-publish-dialog-editoptions">\
-							<form id="wikieditor-' + context.instance + '-publish-dialog-form">\
-								<div class="wikiEditor-publish-dialog-summary">\
-									<label for="wikiEditor-' + context.instance + '-dialog-summary"\
-										rel="wikieditor-publish-dialog-summary"></label>\
-									<br />\
-									<input type="text" id="wikiEditor-' + context.instance + '-dialog-summary"\
-										style="width: 100%;" />\
-								</div>\
-								<div class="wikiEditor-publish-dialog-options">\
-									<input type="checkbox"\
-										id="wikiEditor-' + context.instance + '-dialog-minor" />\
-									<label for="wikiEditor-' + context.instance + '-dialog-minor"\
-										rel="wikieditor-publish-dialog-minor"></label>\
-									<input type="checkbox"\
-										id="wikiEditor-' + context.instance + '-dialog-watch" />\
-									<label for="wikiEditor-' + context.instance + '-dialog-watch"\
-										rel="wikieditor-publish-dialog-watch"></label>\
-								</div>\
-							</form>\
-						</div>',
-					init: function () {
-						var i;
-
-						$(this).find( '[rel]' ).each( function () {
-							$(this).text( mediaWiki.msg( $(this).attr( 'rel' ) ) );
-						});
-
-						/* REALLY DIRTY HACK! */
-						// Reformat the copyright warning stuff
-						var copyWarnHTML = $( '#editpage-copywarn p' ).html();
-						// TODO: internationalize by splitting on other characters that end statements
-						var copyWarnStatements = copyWarnHTML.split( '. ' );
-						var newCopyWarnHTML = '<ul>';
-						for ( i = 0; i < copyWarnStatements.length; i++ ) {
-							if ( copyWarnStatements[i] !== '' ) {
-								var copyWarnStatement = $.trim( copyWarnStatements[i] ).replace( /\.*$/, '' );
-								newCopyWarnHTML += '<li>' + copyWarnStatement + '.</li>';
-							}
+		if ( !document.editform ) {
+			return;
+		}
+		var saving = false;
+		context.$controls.show();
+		context.$buttons.show();
+		// Do not use context.fn.addButton as it prevents Enter click on other form fields to correctly submit the form
+		var btn = $( '<input type="button" disabled="disabled" id="wikieditor-publish-button" />' )
+			.val( $.wikiEditor.autoMsg( { captionMsg: 'wikieditor-publish-button-publish' }, 'caption' ) )
+			.appendTo( context.$buttons );
+		var doSave = function( newsection ) {
+			var sect = ( document.editform.wpSection || {} ).value;
+			var d = {
+				action: 'edit',
+				format: 'json',
+				title: mw.config.get( 'wgTitle' ),
+				summary: document.editform.wpSummary.value,
+				text: context.$textarea.val(),
+				basetimestamp: document.editform.wpEdittime.value,
+				token: document.editform.wpEditToken.value,
+				minor: ( document.editform.wpMinoredit || {} ).checked ? 1 : undefined,
+				watch: ( document.editform.wpWatchthis || {} ).checked ? 1 : undefined
+			};
+			if ( sect ) {
+				d.section = sect;
+			}
+			$.ajax( {
+				url: mw.util.wikiScript( 'api' ),
+				type: 'POST',
+				dataType: 'json',
+				data: d,
+				success: function ( data ) {
+					if ( data.error ) {
+						console.log( data.error );
+						alert( mw.msg( 'wikieditor-publish-error', data.error.info ) );
+					} else {
+						if ( data.edit.newtimestamp ) {
+							document.editform.wpEdittime.value = data.edit.newtimestamp.replace( /\D+/g, '' );
 						}
-						newCopyWarnHTML += '</ul>';
-						// No list if there's only one element
-						$(this).find( '.wikiEditor-publish-dialog-copywarn' ).html(
-								copyWarnStatements.length > 1 ? newCopyWarnHTML : copyWarnHTML
-						);
-						/* END OF REALLY DIRTY HACK */
-
-						if ( $( '#wpMinoredit' ).length === 0 )
-							$( '#wikiEditor-' + context.instance + '-dialog-minor' ).hide();
-						else if ( $( '#wpMinoredit' ).is( ':checked' ) )
-							$( '#wikiEditor-' + context.instance + '-dialog-minor' )
-								.prop( 'checked', true );
-						if ( $( '#wpWatchthis' ).length === 0 )
-							$( '#wikiEditor-' + context.instance + '-dialog-watch' ).hide();
-						else if ( $( '#wpWatchthis' ).is( ':checked' ) )
-							$( '#wikiEditor-' + context.instance + '-dialog-watch' )
-								.prop( 'checked', true );
-
-						$(this).find( 'form' ).submit( function ( e ) {
-							$(this).closest( '.ui-dialog' ).find( 'button:first' ).click();
-							e.preventDefault();
-						});
-					},
-					dialog: {
-						buttons: {
-							'wikieditor-publish-dialog-publish': function () {
-								var minorChecked = $( '#wikiEditor-' + context.instance +
-									'-dialog-minor' ).is( ':checked' ) ?
-										'checked' : '';
-								var watchChecked = $( '#wikiEditor-' + context.instance +
-									'-dialog-watch' ).is( ':checked' ) ?
-										'checked' : '';
-								$( '#wpMinoredit' ).prop( 'checked', minorChecked );
-								$( '#wpWatchthis' ).prop( 'checked', watchChecked );
-								$( '#wpSummary' ).val( $( '#wikiEditor-' + context.instance +
-									'-dialog-summary' ).val() );
-								$( '#editform' ).submit();
-							},
-							'wikieditor-publish-dialog-goback': function () {
-								$(this).dialog( 'close' );
-							}
-						},
-						open: function () {
-							$( '#wikiEditor-' + context.instance + '-dialog-summary' ).focus();
-						},
-						width: 500
-					},
-					resizeme: false
+						btn.prop( 'disabled', true );
+						if ( newsection ) {
+							document.editform.wpSection.value = sect = newsection;
+						}
+						if ( sect ) {
+							$.ajax( {
+								url: mw.util.wikiScript( 'api' ),
+								type: 'POST',
+								dataType: 'json',
+								data: {
+									action: 'parse',
+									format: 'json',
+									page: mw.config.get( 'wgTitle' ),
+									prop: 'wikitext',
+									section: sect
+								},
+								success: function ( data ) {
+									if ( data.parse && data.parse.wikitext && data.parse.wikitext['*'] !== undefined ) {
+										context.$textarea.val( data.parse.wikitext['*'] );
+									}
+								}
+							} );
+						}
+					}
+				},
+				complete: function() {
+					document.getElementById( 'wpSave' ).disabled = false;
+					saving = false;
 				}
+			});
+		}
+		btn.click( function () {
+			if ( saving ) {
+				return;
 			}
-		);
-
-		context.fn.addButton( {
-			'captionMsg': 'wikieditor-publish-button-publish',
-			'action': function () {
-				$( '#' + dialogID ).dialog( 'open' );
-				return false;
+			saving = true;
+			document.getElementById( 'wpSave' ).disabled = true;
+			var sect = ( document.editform.wpSection || {} ).value;
+			if ( sect == 'new' ) {
+				// Query for the last section number before saving
+				// X+1 will be the new section number
+				$.ajax( {
+					url: mw.util.wikiScript( 'api' ),
+					type: 'POST',
+					dataType: 'json',
+					data: {
+						action: 'parse',
+						format: 'json',
+						page: mw.config.get( 'wgTitle' ),
+						prop: 'sections'
+					},
+					success: function( data ) {
+						if ( data.parse && data.parse.sections ) {
+							doSave( parseInt( data.parse.sections[data.parse.sections.length-1].index ) + 1 );
+						} else {
+							if ( data.error ) {
+								console.log( data.error );
+								alert( mw.msg( 'wikieditor-publish-error', data.error.info ) );
+							}
+							document.getElementById( 'wpSave' ).disabled = false;
+							saving = false;
+						}
+					},
+					error: function() {
+						document.getElementById( 'wpSave' ).disabled = false;
+						saving = false;
+					}
+				} );
+			} else {
+				doSave();
 			}
+			return false;
 		} );
-
-		context.fn.addButton( {
-			'captionMsg': 'wikieditor-publish-button-cancel',
-			'action': function () { }
-		} );
+		var chg = function() {
+			btn.prop( 'disabled', false );
+			return true;
+		};
+		context.$textarea.bind( 'cut paste keypress change', chg );
 	}
 }
 

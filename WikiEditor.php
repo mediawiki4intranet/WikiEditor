@@ -471,13 +471,7 @@ $wgResourceModules += array(
 		),
 		'messages' => array(
 			'wikieditor-publish-button-publish',
-			'wikieditor-publish-button-cancel',
-			'wikieditor-publish-dialog-title',
-			'wikieditor-publish-dialog-summary',
-			'wikieditor-publish-dialog-minor',
-			'wikieditor-publish-dialog-watch',
-			'wikieditor-publish-dialog-publish',
-			'wikieditor-publish-dialog-goback',
+			'wikieditor-publish-error',
 		),
 	),
 	'ext.wikiEditor.templateEditor' => $wikiEditorTpl + array(
