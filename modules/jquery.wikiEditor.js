@@ -433,7 +433,6 @@ if ( !context || typeof context === 'undefined' ) {
 							context.$ui.find( '.' + $( this ).parent().attr( 'rel' ) ).show();
 							context.$tabs.find( 'div' ).removeClass( 'current' );
 							$( this ).parent().addClass( 'current' );
-							$( this ).blur();
 							if ( 'init' in options && typeof options.init === 'function' ) {
 								options.init( context );
 							}
