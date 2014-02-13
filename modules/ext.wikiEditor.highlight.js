@@ -2,7 +2,7 @@
  * JavaScript for WikiEditor Highlighting
  */
 
-$( document ).ready( function() {
+$.wikiEditor.addHook( function() {
 	// Add highlight module
-	$( '#wpTextbox1' ).wikiEditor( 'addModule', 'highlight' );
+	$( this ).wikiEditor( 'addModule', 'highlight' );
 } );

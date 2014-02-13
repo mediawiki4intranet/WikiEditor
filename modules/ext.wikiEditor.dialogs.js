@@ -2,14 +2,14 @@
  * JavaScript for WikiEditor Dialogs
  */
 
-$( document ).ready( function() {
+$.wikiEditor.addHook( function() {
 	if ( !$.wikiEditor.isSupported( $.wikiEditor.modules.dialogs ) ) {
 		return;
 	}
 	
 	// Replace icons
-	$.wikiEditor.modules.dialogs.config.replaceIcons( $( '#wpTextbox1' ) );
+	$.wikiEditor.modules.dialogs.config.replaceIcons( $( this ) );
 	
 	// Add dialogs module
-	$( '#wpTextbox1' ).wikiEditor( 'addModule', $.wikiEditor.modules.dialogs.config.getDefaultConfig() );
+	$( this ).wikiEditor( 'addModule', $.wikiEditor.modules.dialogs.config.getDefaultConfig() );
 } );

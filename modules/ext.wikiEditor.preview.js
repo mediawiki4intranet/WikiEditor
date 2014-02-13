@@ -2,7 +2,7 @@
  * JavaScript for WikiEditor Preview module
  */
 
-$( document ).ready( function() {
+$.wikiEditor.addHook( function() {
 	// Add preview module
-	$( 'textarea#wpTextbox1' ).wikiEditor( 'addModule', 'preview' );
+	$( this ).wikiEditor( 'addModule', 'preview' );
 } );

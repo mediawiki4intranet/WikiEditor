@@ -27,6 +27,12 @@ $.wikiEditor = {
 	extensions: {},
 
 	/**
+	 * Global hook functions that are called for every instance,
+	 * no matter if they were added before or after initializing it.
+	*/
+	hooks: [],
+
+	/**
 	 * In some cases like with the iframe's HTML file, it's convienent to have a lookup table of all instances of the
 	 * WikiEditor. Each context contains an instance field which contains a key that corrosponds to a reference to the
 	 * textarea which the WikiEditor was build around. This way, by passing a simple integer you can provide a way back
@@ -103,6 +109,17 @@ $.wikiEditor = {
 		}
 		// Run a browser support test and then cache and return the result
 		return mod.supported = $.client.test( mod.browsers );
+	},
+
+	/**
+	 * Add global hook callback - will be called on all WikiEditor instances,
+	 * including ones initialized in the past and in the future.
+	 */
+	addHook: function ( callback ) {
+		$.wikiEditor.hooks.push( callback );
+		for ( var i = 0; i < $.wikiEditor.instances.length; i++ ) {
+			callback.apply( $.wikiEditor.instances[i] );
+		}
 	},
 
 	/**
@@ -530,6 +547,12 @@ if ( !context || typeof context == 'undefined' ) {
 	$( window ).resize( function ( event ) {
 		context.fn.trigger( 'resize', event );
 	} );
+	// Store the context for next time
+	$(this).data( 'wikiEditor-context', context );
+	// Trigger wikiEditor initialisation hooks
+	for ( var i = 0; i < $.wikiEditor.hooks.length; i++ ) {
+		$.wikiEditor.hooks[i].apply( this );
+	}
 }
 
 /* API Execution */
@@ -571,8 +594,8 @@ if ( args.length > 0 ) {
 	}
 }
 
-// Store the context for next time, and support chaining
-return $(this).data( 'wikiEditor-context', context );
+// Support chaining
+return $(this);
 
 };
 

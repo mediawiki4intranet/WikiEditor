@@ -2,7 +2,7 @@
  * JavaScript for WikiEditor Publish module
  */
 
-$( document ).ready( function() {
+$.wikiEditor.addHook( function() {
 	// Add publish module
-	$( '#wpTextbox1' ).wikiEditor( 'addModule', 'publish' );
+	$( this ).wikiEditor( 'addModule', 'publish' );
 } );

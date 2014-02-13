@@ -2,7 +2,7 @@
  * JavaScript for WikiEditor Table of Contents
  */
 
-$( document ).ready( function() {
+$.wikiEditor.addHook( function() {
 	// Add table of contents module
-	$( '#wpTextbox1' ).wikiEditor( 'addModule', 'toc' );
+	$( this ).wikiEditor( 'addModule', 'toc' );
 } );

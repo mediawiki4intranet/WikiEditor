@@ -210,6 +210,10 @@ class WikiEditorHooks {
 				$wgOut->addModules( $feature['modules'] );
 			}
 		}
+
+		// Let people extend WikiEditor
+		wfRunHooks( 'WikiEditorAddModules' );
+
 		return true;
 	}
 
