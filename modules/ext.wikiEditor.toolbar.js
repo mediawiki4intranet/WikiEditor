@@ -1,7 +1,8 @@
 /*
  * JavaScript for WikiEditor Toolbar
  */
-jQuery( document ).ready( function ( $ ) {
+
+$.wikiEditor.addHook( function() {
 	if ( !$.wikiEditor.isSupported( $.wikiEditor.modules.toolbar ) ) {
 		$( '.wikiEditor-oldToolbar' ).show();
 		return;
@@ -10,7 +11,7 @@ jQuery( document ).ready( function ( $ ) {
 	$( '#toolbar' ).remove();
 	// Add toolbar module
 	// TODO: Implement .wikiEditor( 'remove' )
-	$( '#wpTextbox1' ).wikiEditor(
+	$( this ).wikiEditor(
 		'addModule', $.wikiEditor.modules.toolbar.config.getDefaultConfig()
 	);
 } );

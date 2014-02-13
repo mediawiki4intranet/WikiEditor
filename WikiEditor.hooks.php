@@ -259,6 +259,9 @@ class WikiEditorHooks {
 			self::doEventLogging( 'init', $article, $data );
 		}
 
+		// Let people extend WikiEditor
+		wfRunHooks( 'WikiEditorAddModules' );
+
 		return true;
 	}
 
@@ -293,6 +296,7 @@ class WikiEditorHooks {
 				)
 			)
 		);
+
 		return true;
 	}
 
